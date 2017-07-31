@@ -1,0 +1,16 @@
+{
+  "name": "melresback",
+  "main": "melresback.js",
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "jsonwebtoken": "^7.4.1",
+    "mongoose": "^4.11.5",
+    "morgan": "^1.8.2"
+  },
+  "scripts": {
+    "start": "node melresback.js",
+    "test": "nodemon melresback.js"
+  }
+}
