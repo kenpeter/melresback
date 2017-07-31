@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const router = require('express').Router();
 const app = require('../../melresback');
+const Restaurant = require('../../models/Restaurant');
 
 router.get('/', (req, res) => {
   res.json("boring api page");
@@ -35,7 +36,6 @@ router.post('/auth', (req, res) => {
   }
 }); // end post
 
-
 router.use((req, res, next) => {
   // Look it wants to have a token in url.
   var token = req.query.token;
@@ -69,11 +69,23 @@ router.use((req, res, next) => {
       message: 'No token provided.'
     });
   }
-
 });
 
-router.get('/defaultUser', (req, res) => {
-
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZW5wZXRlciI6ImtlbnBldGVyIiwiaWF0IjoxNTAxNDY3NzAzLCJleHAiOjE1MDE1NTQxMDN9.j8L0s-LyFhOkfsS3h6TdCwQ_Tpv0hE9xc6XVBFLRqK0
+router.get('/restaurants', (req, res) => {
+  Restaurant
+    .find({ })
+    .exec(function (err, restaurants) {
+      if (err) {
+        console.log('-- get default restaurants error --');
+        console.log(err);
+        res.json({ error: true });
+      } else {
+        console.log('-- api get restaurants user --');
+        //console.log(user);
+        res.json({ restaurants });
+      }
+    }); // end exec
 });
 
 module.exports = router;
