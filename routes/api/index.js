@@ -88,4 +88,26 @@ router.get('/restaurants', (req, res) => {
     }); // end exec
 });
 
+//
+router.get('/restaurant', (req, res) => {
+  Restaurant.count().exec((err, count) => {
+    // Get a random entry
+    const random = Math.floor(Math.random() * count);
+
+    // Again query all users but only fetch one offset by our random #
+    Restaurant.findOne().skip(random).exec(
+      (err, restaurants) => {
+        if (err) {
+          console.log('-- get default restaurants error --');
+          console.log(err);
+          res.json({ error: true });
+        } else {
+          console.log('-- api get restaurants user --');
+          //console.log(user);
+          res.json({ restaurants });
+        }
+      });
+  });
+});
+
 module.exports = router;
