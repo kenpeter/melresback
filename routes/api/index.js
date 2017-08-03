@@ -110,4 +110,10 @@ router.get('/restaurant', (req, res) => {
   });
 });
 
+
+router.get('/voteUp', (req, res) => {
+  //test
+  console.log('yes_vote_up');
+});
+
 module.exports = router;
