@@ -121,11 +121,11 @@ router.post('/voteUp', (req, res) => {
   const query = { restaurant: resId };
   RestaurantVote.findOne(query, (err, result) => {
     const newCount = result.voteUpCount + countNum;
-    console.log('-- newCount --');
-    console.log(resId);
-    console.log(newCount);
-    RestaurantVote.findOneAndUpdate(query, { voteUpCount: newCount }, {}, (err, result) => {
-      if (err) {
+    //console.log('-- newCount --');
+    //console.log(resId);
+    //console.log(newCount);
+    RestaurantVote.findOneAndUpdate(query, { voteUpCount: newCount }, {}, (err1, result1) => {
+      if (err1) {
         //console.log('-- voteUp error --');
         //console.log(err);
         res.json({ error: true });
@@ -133,7 +133,7 @@ router.post('/voteUp', (req, res) => {
       } else {
         //console.log('-- voteUp good --');
         //console.log(user);
-        res.json({ result });
+        res.json({ result1 });
         return;
       }
     });
