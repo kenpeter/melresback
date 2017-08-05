@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const router = require('express').Router();
 const app = require('../../melresback');
 const Restaurant = require('../../models/Restaurant');
+const RestaurantVote = require('../../models/RestaurantVote');
 
 router.get('/', (req, res) => {
   res.json("boring api page");
@@ -36,7 +37,6 @@ router.post('/auth', (req, res) => {
   }
 }); // end post
 
-/*
 router.use((req, res, next) => {
   // Look it wants to have a token in url.
   var token = req.query.token;
@@ -71,7 +71,6 @@ router.use((req, res, next) => {
     });
   }
 });
-*/
 
 // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZW5wZXRlciI6ImtlbnBldGVyIiwiaWF0IjoxNTAxNDY3NzAzLCJleHAiOjE1MDE1NTQxMDN9.j8L0s-LyFhOkfsS3h6TdCwQ_Tpv0hE9xc6XVBFLRqK0
 router.get('/restaurants', (req, res) => {
@@ -104,7 +103,7 @@ router.get('/restaurant', (req, res) => {
           console.log(err);
           res.json({ error: true });
         } else {
-          console.log('-- api get restaurants user --');
+          console.log('-- api get restaurants --');
           //console.log(user);
           res.json({ restaurants });
         }
@@ -113,10 +112,32 @@ router.get('/restaurant', (req, res) => {
 });
 
 
-router.get('/voteUp', (req, res) => {
-  //test
-  console.log('yes_vote_up');
-	res.json({good: 'good'});
+router.post('/voteUp', (req, res) => {
+  const resId = req.body.resId;
+  const countNum = parseInt(req.body.countNum);
+
+  //console.log('-- test --');
+  //console.log(resId + " | " + countNum);
+  const query = { restaurant: resId };
+  RestaurantVote.findOne(query, (err, result) => {
+    const newCount = result.voteUpCount + countNum;
+    console.log('-- newCount --');
+    console.log(resId);
+    console.log(newCount);
+    RestaurantVote.findOneAndUpdate(query, { voteUpCount: newCount }, {}, (err, result) => {
+      if (err) {
+        //console.log('-- voteUp error --');
+        //console.log(err);
+        res.json({ error: true });
+        return;
+      } else {
+        //console.log('-- voteUp good --');
+        //console.log(user);
+        res.json({ result });
+        return;
+      }
+    });
+  });
 });
 
 module.exports = router;
