@@ -3,6 +3,7 @@ const router = require('express').Router();
 const app = require('../../melresback');
 const Restaurant = require('../../models/Restaurant');
 const RestaurantVote = require('../../models/RestaurantVote');
+const objectAssign = require('object-assign');
 
 router.get('/', (req, res) => {
   res.json("boring api page");
@@ -37,6 +38,7 @@ router.post('/auth', (req, res) => {
   }
 }); // end post
 
+// Guard
 router.use((req, res, next) => {
   // Look it wants to have a token in url.
   var token = req.query.token;
@@ -82,7 +84,7 @@ router.get('/restaurants', (req, res) => {
         console.log(err);
         res.json({ error: true });
       } else {
-        console.log('-- api get restaurants user --');
+        console.log('-- api get restaurants --');
         //console.log(user);
         res.json({ restaurants });
       }
@@ -95,17 +97,37 @@ router.get('/restaurant', (req, res) => {
     // Get a random entry
     const random = Math.floor(Math.random() * count);
 
-    // Again query all users but only fetch one offset by our random #
+    // Again query all restaurants but only fetch one offset by our random #
     Restaurant.findOne().skip(random).exec(
       (err, restaurants) => {
         if (err) {
-          console.log('-- get default restaurants error --');
+          console.log('-- get single restaurant error --');
           console.log(err);
           res.json({ error: true });
         } else {
-          console.log('-- api get restaurants --');
-          //console.log(user);
-          res.json({ restaurants });
+          console.log('-- api get restaurant good --');
+          RestaurantVote.findOne({ restaurant: restaurants._id }, (err, result) => {
+            // Most stupid method, but it works only this way.
+            const myRes = {
+              _id: restaurants._id,
+              resId: restaurants.resId,
+              name: restaurants.name,
+              url: restaurants.url,
+              address: restaurants.address,
+              averageCostForTwo: restaurants.averageCostForTwo,
+              thumbUrl: restaurants.thumbUrl,
+              photoUrl: restaurants.photoUrl,
+              menuUrl: restaurants.menuUrl,
+              __v: restaurants.__v,
+              updatedAt: restaurants.updatedAt,
+              createdAt: restaurants.createdAt,
+              voteDownCount: result.voteDownCount,
+              voteUpCount: result.voteUpCount
+            }
+
+            //console.log(myRes);
+            res.json({ restaurants: myRes });
+          });
         }
       });
   });
@@ -133,7 +155,7 @@ router.post('/voteUp', (req, res) => {
       } else {
         //console.log('-- voteUp good --');
         //console.log(user);
-        res.json({ result1 });
+        res.json({ newCount });
         return;
       }
     });
