@@ -162,4 +162,33 @@ router.post('/voteUp', (req, res) => {
   });
 });
 
+
+router.post('/voteDown', (req, res) => {
+  const resId = req.body.resId;
+  const countNum = parseInt(req.body.countNum);
+
+  //console.log('-- test --');
+  //console.log(resId + " | " + countNum);
+  const query = { restaurant: resId };
+  RestaurantVote.findOne(query, (err, result) => {
+    const newCount = result.voteDownCount + countNum;
+    //console.log('-- newCount --');
+    //console.log(resId);
+    //console.log(newCount);
+    RestaurantVote.findOneAndUpdate(query, { voteDownCount: newCount }, {}, (err1, result1) => {
+      if (err1) {
+        //console.log('-- voteUp error --');
+        //console.log(err);
+        res.json({ error: true });
+        return;
+      } else {
+        //console.log('-- voteUp good --');
+        //console.log(user);
+        res.json({ newCount });
+        return;
+      }
+    });
+  });
+});
+
 module.exports = router;
