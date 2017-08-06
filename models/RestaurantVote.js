@@ -7,7 +7,7 @@ const conn = require('../connect');
 const Schema = mongoose.Schema;
 //
 const RestaurantVoteSchema = new Schema({
-  restaurant: { type: Schema.Types.ObjectId, ref: 'Restaurant' },
+  restaurant: { type: String, ref: 'Restaurant' },
   voteUpCount: { type: Number, default: 0 },
   voteDownCount: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },

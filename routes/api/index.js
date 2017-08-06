@@ -74,7 +74,7 @@ router.use((req, res, next) => {
   }
 });
 
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZW5wZXRlciI6ImtlbnBldGVyIiwiaWF0IjoxNTAxNDY3NzAzLCJleHAiOjE1MDE1NTQxMDN9.j8L0s-LyFhOkfsS3h6TdCwQ_Tpv0hE9xc6XVBFLRqK0
+/*
 router.get('/restaurants', (req, res) => {
   Restaurant
     .find({ })
@@ -90,6 +90,7 @@ router.get('/restaurants', (req, res) => {
       }
     }); // end exec
 });
+*/
 
 //
 router.get('/restaurant', (req, res) => {
@@ -106,7 +107,7 @@ router.get('/restaurant', (req, res) => {
           res.json({ error: true });
         } else {
           console.log('-- api get restaurant good --');
-          RestaurantVote.findOne({ restaurant: restaurants._id }, (err, result) => {
+          RestaurantVote.findOne({ restaurant: restaurants.resId }, (err, result) => {
             // Most stupid method, but it works only this way.
             const myRes = {
               _id: restaurants._id,
@@ -135,6 +136,7 @@ router.get('/restaurant', (req, res) => {
 
 
 router.post('/voteUp', (req, res) => {
+  // resId has to be api restaurant id
   const resId = req.body.resId;
   const countNum = parseInt(req.body.countNum);
 
@@ -143,18 +145,11 @@ router.post('/voteUp', (req, res) => {
   const query = { restaurant: resId };
   RestaurantVote.findOne(query, (err, result) => {
     const newCount = result.voteUpCount + countNum;
-    //console.log('-- newCount --');
-    //console.log(resId);
-    //console.log(newCount);
     RestaurantVote.findOneAndUpdate(query, { voteUpCount: newCount }, {}, (err1, result1) => {
       if (err1) {
-        //console.log('-- voteUp error --');
-        //console.log(err);
         res.json({ error: true });
         return;
       } else {
-        //console.log('-- voteUp good --');
-        //console.log(user);
         res.json({ newCount });
         return;
       }
@@ -166,24 +161,15 @@ router.post('/voteUp', (req, res) => {
 router.post('/voteDown', (req, res) => {
   const resId = req.body.resId;
   const countNum = parseInt(req.body.countNum);
-
-  //console.log('-- test --');
-  //console.log(resId + " | " + countNum);
   const query = { restaurant: resId };
+
   RestaurantVote.findOne(query, (err, result) => {
     const newCount = result.voteDownCount + countNum;
-    //console.log('-- newCount --');
-    //console.log(resId);
-    //console.log(newCount);
     RestaurantVote.findOneAndUpdate(query, { voteDownCount: newCount }, {}, (err1, result1) => {
       if (err1) {
-        //console.log('-- voteUp error --');
-        //console.log(err);
         res.json({ error: true });
         return;
       } else {
-        //console.log('-- voteUp good --');
-        //console.log(user);
         res.json({ newCount });
         return;
       }
